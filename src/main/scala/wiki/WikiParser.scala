@@ -1,15 +1,9 @@
 package wiki
 
-import fs2.Pipe
-
-import scala.xml._
-import fs2.{Pipe, Segment, Sink, io, text, Stream => S}
+import fs2.{ Pipe, Stream => S }
 import wiki.utils.WrappersUtils
-import scala.util.matching._
-
-import scala.annotation.tailrec
-import scala.util.{Failure, Success, Try}
-import scala.collection.mutable.Stack
+import scala.util.Try
+import scala.xml._
 
 /**
   * Created by Bondarenko on 5/9/18.
@@ -44,6 +38,9 @@ trait WikiParser extends Replacers {
       .replaceLinks
       .replaceBold
       .replaceItalic
+      .removeFurtherReading
+      .removeReferences
+      .removeSeeAlso
 
   def removeFormatting(p: Page): Try[Page] = {
     Try(p.copy(text = extractText(p.text)))
@@ -79,6 +76,11 @@ trait Replacers extends WrappersUtils{
 
     def replaceOther = replaceAll("{", "}")(new StringBuilder(text)).toString().trim
 
+    def removeReferences = removeAfter(text, "==References==")
+
+    def removeSeeAlso = removeAfter(text, "==See also==")
+
+    def removeFurtherReading = removeAfter(text, "==Further reading==")
 
     private final def replaceWrapping(text: String, start: String, end: String)(f: String => String): String = {
       val startIndex = text.indexOf(start, 0)
@@ -90,6 +92,12 @@ trait Replacers extends WrappersUtils{
         val result = new StringBuilder(text)
         replaceWrapping(result.replace(startIndex, endIndex + end.length, f(inner)).toString(), start, end)(f)
       }
+    }
+
+    private final def removeAfter(text: String, after: String) = {
+      val startIndex = text.indexOf(after)
+      if(startIndex != -1) text.substring(0, startIndex).trim
+      else text.trim
     }
 
   }

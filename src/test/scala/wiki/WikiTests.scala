@@ -71,6 +71,17 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     parsedText shouldNot contain("}}")
   }
 
+  it should "remove external links section" in {
+    val text = Source.fromFile("src/test/resources/test4.txt").getLines().mkString("\n")
+
+    val parsedText = extractText(text)
+
+    parsedText.indexOf("==See also==") shouldBe -1
+    parsedText.indexOf("==References==") shouldBe -1
+    parsedText.indexOf("==Further reading==") shouldBe -1
+    parsedText should endWith("Anarchism is often evaluated as unfeasible or utopian by its critics.")
+  }
+
   it should "extract all wrapped confucianism" in {
     val text = Source.fromFile("src/test/resources/confucianism.txt").getLines().mkString("\n")
 
