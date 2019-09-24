@@ -36,6 +36,7 @@ object Main extends App{
         .through(extractText)
         .collect{ case Success(s) => s}
         .through(logProgress)
+        .through(writeToMongo)
         .through(format)
         .through(text.utf8Encode)
         .to(io.file.writeAll(Paths.get(config.targetFilePath)))

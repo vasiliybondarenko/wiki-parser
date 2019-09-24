@@ -71,16 +71,96 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     parsedText shouldNot contain("}}")
   }
 
-  it should "remove external links section" in {
+  it should "remove links sections" in {
     val text = Source.fromFile("src/test/resources/test4.txt").getLines().mkString("\n")
+
+
+
+    val text1 = """
+      == See also ==
+
+      * Comparison of Linux distributions
+      * Computer technology for developing areas
+      * DCC Alliance
+      * Free culture movement
+    """
+    val text2 = """
+      == References ==
+      * Walter Burkert (1985) Greek Religion, Harvard University Press, 1985.
+    """
+
+    val text3 = """
+      == Further reading ==
+      * Dalai Lama. (1991) Freedom in Exile: The Autobiography of the Dalai Lama. San Francisco, CA.
+    """
+
 
     val parsedText = extractText(text)
 
     parsedText.indexOf("==See also==") shouldBe -1
     parsedText.indexOf("==References==") shouldBe -1
     parsedText.indexOf("==Further reading==") shouldBe -1
+
+    extractText(text1) shouldBe ""
+    extractText(text2) shouldBe ""
+    extractText(text3) shouldBe ""
+
     parsedText should endWith("Anarchism is often evaluated as unfeasible or utopian by its critics.")
   }
+
+  it should "remove external links section" in {
+    val text = """
+            Constellations: An International Journal of Critical and Democratic Theory is a quarterly peer-reviewed academic journal of critical and democratic theory and successor of Praxis International. It is edited by Andrew Arato, Amy Allen, and Andreas Kalyvas. Seyla Benhabib is a co-founding former editor and Nancy Fraser a former co-editor.
+
+            ==External links==
+            *
+            Category:Sociology journals
+            Category:Publications established in 1994
+            Category:Quarterly journals
+            Category:Wiley-Blackwell academic journals
+            Category:English-language journals
+    """
+
+    val parsedText1 = extractText(text)
+    val parsedText2 = extractText(text.replace("==External links==", "== External links =="))
+
+    parsedText1.trim shouldEqual(
+      "Constellations: An International Journal of Critical and Democratic Theory is a quarterly peer-reviewed academic journal of critical and democratic theory and successor of Praxis International. It is edited by Andrew Arato, Amy Allen, and Andreas Kalyvas. Seyla Benhabib is a co-founding former editor and Nancy Fraser a former co-editor."
+      )
+    parsedText2.trim shouldEqual(
+      "Constellations: An International Journal of Critical and Democratic Theory is a quarterly peer-reviewed academic journal of critical and democratic theory and successor of Praxis International. It is edited by Andrew Arato, Amy Allen, and Andreas Kalyvas. Seyla Benhabib is a co-founding former editor and Nancy Fraser a former co-editor."
+      )
+
+  }
+
+  it should "remove ref elements encoded" in {
+    val text = Source.fromFile("src/test/resources/test5.txt").getLines().mkString("\n")
+
+    val parsedText = extractText(text)
+
+    parsedText.indexOf("""&lt;ref name=&quot;constitution&quot; /&gt;""") shouldBe -1
+    parsedText.indexOf("""&lt;/ref""") shouldBe -1
+
+  }
+
+  it should "remove ref elements" in {
+    val text = """
+      <ref name=slevin>Slevin, Carl. "Anarchism." The Concise Oxford Dictionary of Politics. Ed. Iain McLean and Alistair McMillan. Oxford University Press, 2003.</ref>
+    """
+    val parsedText = extractText(text)
+
+    parsedText should be("")
+  }
+
+  it should "remove <!-- comments" in {
+    val text = """
+      <!-- Please refrain from name-dropping your favorite band; as we would all love to include our favorites, only a few examples are needed to benefit the article. -->
+    """
+    val parsedText = extractText(text)
+
+    parsedText should be("")
+  }
+
 
   it should "extract all wrapped confucianism" in {
     val text = Source.fromFile("src/test/resources/confucianism.txt").getLines().mkString("\n")

@@ -1,6 +1,7 @@
 package wiki
 
 import fs2.{ Pipe, Stream => S }
+import wiki.mongo.MongoApp
 import wiki.utils.WrappersUtils
 import scala.util.Try
 import scala.xml._
@@ -41,6 +42,9 @@ trait WikiParser extends Replacers {
       .removeFurtherReading
       .removeReferences
       .removeSeeAlso
+      .removeRefs
+      .removeExternalLinks
+      .removeTags
 
   def removeFormatting(p: Page): Try[Page] = {
     Try(p.copy(text = extractText(p.text)))
@@ -66,6 +70,8 @@ trait Replacers extends WrappersUtils{
       }
     }
 
+
+
     def replaceBold = replaceWrapping(text, "'''", "'''")(s => s)
 
     def replaceItalic = replaceWrapping(text, "''", "''")(s => s)
@@ -76,11 +82,49 @@ trait Replacers extends WrappersUtils{
 
     def replaceOther = replaceAll("{", "}")(new StringBuilder(text)).toString().trim
 
-    def removeReferences = removeAfter(text, "==References==")
+    def removeReferences = removeSection(text)("References")
 
-    def removeSeeAlso = removeAfter(text, "==See also==")
+    def removeSeeAlso = removeSection(text)("See also")
 
-    def removeFurtherReading = removeAfter(text, "==Further reading==")
+    def removeFurtherReading = removeSection(text)("Further reading")
+
+    def removeExternalLinks = removeSection(text)("External links")
+
+	def removeRefs = {
+      replaceWrappingSeq(text)(
+        List(
+          "&lt;ref" -> "&lt;/ref",
+          "&lt;ref" -> "/&gt;",
+          "<ref" -> "</ref>",
+          "<ref" -> "/>",
+          "<!--" -> "-->"
+        )
+      )
+    }
+
+    def removeTags = {
+      replaceWrappingSeq(text)(
+        List(
+          "<gallery" -> "</gallery>",
+          "<center" -> "</center>",
+          "<abbr" -> "</abbr>",
+          "<div" -> "</div>",
+          "<sub" -> "</sub>",
+          "<sup" -> "</sup>",
+          "<math" -> "</math>"
+        )
+      )
+    }
+
+    private def removeSection(text: String)(section: String) = {
+      removeAfter(removeAfter(text, s"==$section=="), s"== $section ==")
+    }
+
+    private final def replaceWrappingSeq(text: String)(wrappings: List[(String, String)]) = {
+      wrappings.foldLeft(text){
+        case (prevText, (begin, end)) => replaceWrapping(prevText, begin, end)(_ => "")
+      }
+    }
 
     private final def replaceWrapping(text: String, start: String, end: String)(f: String => String): String = {
       val startIndex = text.indexOf(start, 0)
@@ -92,6 +136,27 @@ trait Replacers extends WrappersUtils{
         val result = new StringBuilder(text)
         replaceWrapping(result.replace(startIndex, endIndex + end.length, f(inner)).toString(), start, end)(f)
       }
+    }
+
+
+    private final def removeTags(text: String)(f: String => String): String = {
+      val p = "<([a-zA-Z]+)(.*)".r
+      text match {
+        case p(tag, rest) =>
+          val start = s"<$tag"
+          val end = s"</$tag>"
+          val startIndex =  text.indexOf(s"<$tag", 0)
+          val endIndex = rest.indexOf(end, startIndex + start.length)
+          if (startIndex == -1 || endIndex == -1) text
+          else {
+            val inner = text.substring(startIndex + start.length, endIndex)
+            val result = new StringBuilder(text)
+            removeTags(
+              result.replace(startIndex, endIndex + end.length, f(inner)).toString()
+            )(f)
+          }
+      }
+
     }
 
     private final def removeAfter(text: String, after: String) = {
@@ -120,6 +185,13 @@ object Parser extends WikiParser {
     case (p, id) =>
       val count = id + 1
       if(count % 10L == 0)  println(s"PAGES PROCESSED: $count")
+      p
+  }
+
+  def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
+    case (p, id) =>
+      val count = id + 1
+      MongoApp.write("wiki1")(List(p.title -> p.text))
       p
   }
 
