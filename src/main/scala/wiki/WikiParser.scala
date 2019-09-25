@@ -1,6 +1,7 @@
 package wiki
 
-import fs2.{ Pipe, Stream => S }
+import cats.effect.IO
+import fs2.{ Pipe, Sink, Stream => S }
 import wiki.mongo.MongoApp
 import wiki.utils.WrappersUtils
 import scala.util.Try
@@ -187,6 +188,8 @@ object Parser extends WikiParser {
       if(count % 10L == 0)  println(s"PAGES PROCESSED: $count")
       p
   }
+
+  def saveToMongoDB[F[_]]: Sink[IO, Page] = ???
 
   def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
     case (p, id) =>

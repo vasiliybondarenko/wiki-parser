@@ -18,31 +18,37 @@ import scala.util.Success
 object Main extends App{
 
 
+  private def concat[F[_]]: Pipe[F, Segment[String, Unit], String] = _.flatMap(seg =>  S(seg.force.toList.mkString("\n") + "</page>"))
 
-
-  def convertWiki(implicit config: Config) = {
-    def concat[F[_]]: Pipe[F, Segment[String, Unit], String] = _.flatMap(seg =>  S(seg.force.toList.mkString("\n") + "</page>"))
-
-    deleteFile(config.targetFilePath)
-
+  private def parsedWikiPages(config: Config) = {
     io.file.readAll[IO](Paths.get(config.wikiPath), 4096)
-        .through(text.utf8Decode)
-        .through(text.lines).dropWhile(!_.contains("<page"))
-        .split(line => line.trim.startsWith("</page>"))
-        .through(concat)
-        .through(toPage)
-        .collect{ case Success(s) => s}
-        .filter(wikiFilter)
-        .through(extractText)
-        .collect{ case Success(s) => s}
-        .through(logProgress)
+      .through(text.utf8Decode)
+      .through(text.lines).dropWhile(!_.contains("<page"))
+      .split(line => line.trim.startsWith("</page>"))
+      .through(concat)
+      .through(toPage)
+      .collect{ case Success(s) => s}
+      .filter(wikiFilter)
+      .through(extractText)
+      .collect{ case Success(s) => s}
+      .through(logProgress)
+  }
+
+  def convertAndWriteToMongo(implicit config: Config) = {
+    parsedWikiPages(config)
+      .to(saveToMongoDB)
+  }
+
+  def convertAndWriteToFile(implicit config: Config) = {
+    deleteFile(config.targetFilePath)
+    parsedWikiPages(config)
         .through(writeToMongo)
         .through(format)
         .through(text.utf8Encode)
         .to(io.file.writeAll(Paths.get(config.targetFilePath)))
   }
 
-  convertWiki.compile.drain.
+  convertAndWriteToFile.compile.drain.
     unsafeRunSync()
 
 
