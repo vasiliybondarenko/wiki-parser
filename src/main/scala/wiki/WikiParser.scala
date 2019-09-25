@@ -2,10 +2,14 @@ package wiki
 
 import cats.effect.IO
 import fs2.{ Pipe, Sink, Stream => S }
+import org.bson.{ BsonElement, BsonString }
+import org.mongodb.scala.Document
+import org.mongodb.scala.bson.BsonDocument
 import wiki.mongo.MongoApp
 import wiki.utils.WrappersUtils
 import scala.util.Try
 import scala.xml._
+import scala.collection.JavaConverters._
 
 /**
   * Created by Bondarenko on 5/9/18.
@@ -189,7 +193,17 @@ object Parser extends WikiParser {
       p
   }
 
-  def saveToMongoDB[F[_]]: Sink[IO, Page] = ???
+  private def pageToDoc(p: Page): Document = {
+    val elements = List(
+      new BsonElement("title", new BsonString(p.title)),
+      new BsonElement("body", new BsonString(p.text))
+    )
+    new Document(new BsonDocument(elements.asJava))
+  }
+
+  def saveToMongoDB[F[_]]: Sink[IO, Page] = Sink[IO, Page]{ p =>
+    MongoApp.writeDoc("articles")(p)(pageToDoc).map(_ => ())
+  }
 
   def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
     case (p, id) =>

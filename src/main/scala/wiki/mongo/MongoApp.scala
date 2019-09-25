@@ -50,6 +50,15 @@ object MongoApp extends App{
     Await.result(coll.insertMany(docs).toFuture(), 10.seconds)
   }
 
+  def writeDoc[T](collectionName: String)(doc: T)(f: T => Document) = {
+    val coll = client.getDatabase("wikipedia").getCollection(collectionName)
+    IO.fromFuture{
+      IO{
+        coll.insertOne(f(doc)).toFuture()
+      }  
+    }
+  }
+
 
   textSearch("wiki1")("Enraged over").foreach{ d  =>
     println(d)

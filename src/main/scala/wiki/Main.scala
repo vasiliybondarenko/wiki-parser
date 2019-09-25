@@ -48,7 +48,7 @@ object Main extends App{
         .to(io.file.writeAll(Paths.get(config.targetFilePath)))
   }
 
-  convertAndWriteToFile.compile.drain.
+  convertAndWriteToMongo.compile.drain.
     unsafeRunSync()
 
 
