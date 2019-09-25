@@ -42,7 +42,7 @@ object Main extends App{
   def convertAndWriteToFile(implicit config: Config) = {
     deleteFile(config.targetFilePath)
     parsedWikiPages(config)
-        .through(writeToMongo)
+        .through(withoutId)
         .through(format)
         .through(text.utf8Encode)
         .to(io.file.writeAll(Paths.get(config.targetFilePath)))

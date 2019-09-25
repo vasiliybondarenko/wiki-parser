@@ -4,7 +4,7 @@ import cats.effect.IO
 import fs2.{ Pipe, Sink, Stream => S }
 import org.bson.{ BsonElement, BsonString }
 import org.mongodb.scala.Document
-import org.mongodb.scala.bson.BsonDocument
+import org.mongodb.scala.bson.{ BsonDocument, BsonInt64 }
 import wiki.mongo.MongoApp
 import wiki.utils.WrappersUtils
 import scala.util.Try
@@ -177,6 +177,8 @@ trait Replacers extends WrappersUtils{
 
 object Parser extends WikiParser {
 
+  def withoutId[F[_]]: Pipe[F, (Long, Page), Page] = _.flatMap(s => S.emit(s._2))
+
   def format[F[_]]: Pipe[F, Page, String] = _.flatMap(s => S.emit(formatPage(s)))
 
   def extractText[F[_]]: Pipe[F, Page, Try[Page]] = _.flatMap(s => S.emit(removeFormatting(s)))
@@ -186,23 +188,26 @@ object Parser extends WikiParser {
   def wikiFilter(p: Page): Boolean = !p.text.toUpperCase.contains("#REDIRECT") && !p.title.toUpperCase.contains("(DISAMBIGUATION)")
 
   @deprecated("IO should be separated")
-  def logProgress[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
+  def logProgress[F[_]]: Pipe[F, Page, (Long, Page)] = _.zipWithIndex.map{
     case (p, id) =>
       val count = id + 1
-      if(count % 10L == 0)  println(s"PAGES PROCESSED: $count")
-      p
+      if(count % 100L == 0)  println(s"PAGES PROCESSED: $count")
+      id -> p
   }
 
-  private def pageToDoc(p: Page): Document = {
+  private def pageToDoc(id: Long, p: Page): Document = {
     val elements = List(
+      new BsonElement("id", new BsonInt64(id)),
       new BsonElement("title", new BsonString(p.title)),
       new BsonElement("body", new BsonString(p.text))
     )
     new Document(new BsonDocument(elements.asJava))
   }
 
-  def saveToMongoDB[F[_]]: Sink[IO, Page] = Sink[IO, Page]{ p =>
-    MongoApp.writeDoc("articles")(p)(pageToDoc).map(_ => ())
+  def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)]{ p =>
+    MongoApp.writeDoc("articles")(p){
+      case (id, p) =>  pageToDoc(id, p)
+    }.map(_ => ())
   }
 
   def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
