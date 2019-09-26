@@ -7,6 +7,7 @@ import org.mongodb.scala.Document
 import org.mongodb.scala.bson.{ BsonDocument, BsonInt64 }
 import wiki.mongo.MongoApp
 import wiki.utils.WrappersUtils
+import scala.annotation.tailrec
 import scala.util.Try
 import scala.xml._
 import scala.collection.JavaConverters._
@@ -144,25 +145,28 @@ trait Replacers extends WrappersUtils{
     }
 
 
-    private final def removeTags(text: String)(f: String => String): String = {
-      val p = "<([a-zA-Z]+)(.*)".r
-      text match {
-        case p(tag, rest) =>
-          val start = s"<$tag"
-          val end = s"</$tag>"
-          val startIndex =  text.indexOf(s"<$tag", 0)
-          val endIndex = rest.indexOf(end, startIndex + start.length)
-          if (startIndex == -1 || endIndex == -1) text
-          else {
-            val inner = text.substring(startIndex + start.length, endIndex)
-            val result = new StringBuilder(text)
-            removeTags(
-              result.replace(startIndex, endIndex + end.length, f(inner)).toString()
-            )(f)
-          }
-      }
-
-    }
+//    private final def removeTags(text: String)(f: String => String): String = {
+//      val p = "<([a-zA-Z]+)(.*)".r
+//      text match {
+//        case p(tag, rest) =>
+//          println(s"TAG: $tag")
+//          val start = s"<$tag"
+//          val end = s"</$tag>"
+//          val startIndex =  text.indexOf(s"<$tag", 0)
+//          val endIndex = rest.indexOf(end, startIndex + start.length)
+//          if (startIndex == -1 || endIndex == -1) text
+//          else {
+//            val inner = text.substring(startIndex + start.length, endIndex)
+//            val result = new StringBuilder(text)
+//            removeTags(
+//              result.replace(startIndex, endIndex + end.length, f(inner)).toString()
+//            )(f)
+//          }
+//
+//        case _ => text
+//      }
+//
+//    }
 
     private final def removeAfter(text: String, after: String) = {
       val startIndex = text.indexOf(after)

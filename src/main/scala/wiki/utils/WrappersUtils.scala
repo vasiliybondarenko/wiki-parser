@@ -47,7 +47,7 @@ trait WrappersUtils {
           case Stream.Empty => Right(s)
           case b #:: restBrackets => b match {
             case Opened(i) => Left(i :: opened)
-            case Closed(i) if (!opened.isEmpty) => opened match {
+            case Closed(i) if !opened.isEmpty => opened match {
               case firstOpened :: Nil =>
                 Right(s.replace(firstOpened, i + end.length, ""))
               case _ :: restOpened =>
@@ -57,6 +57,7 @@ trait WrappersUtils {
                   Right(s.replace(beginIndex, endIndex, ""))
                 } else Left(restOpened)
             }
+            case Closed(_) => Right(s)
           }
         }
       result match {
@@ -75,13 +76,15 @@ trait WrappersUtils {
 
     val result = replace(begin, end)(s, Nil)
     val beginIndex = result.indexOf(begin)
-    if(beginIndex == -1) {
+    if(beginIndex == -1 || result == s) {
       result
     } else {
       opt(result.indexOf(end, beginIndex)) match {
         case None =>
           s.replace(beginIndex, result.indexOf("\n", beginIndex).getOrElse(result.length), "")
-        case _ => replaceAll(begin, end)(result)
+        case _ =>
+          println(s"${result.length}")
+          replaceAll(begin, end)(result)
       }
 
     }

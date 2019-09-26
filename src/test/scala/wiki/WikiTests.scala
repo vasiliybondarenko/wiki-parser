@@ -54,7 +54,6 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
       """
 
     val result = extractText(s)
-    println(s"RESULT: ${result.trim}")
 
     result shouldBe empty
     result shouldNot contain("{{")
@@ -168,9 +167,17 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     val parsedText = extractText(text)
     parsedText shouldNot contain("{{")
     parsedText shouldNot contain("}}")
-
-    println(parsedText)
   }
+
+  it should "parse wiki project page" in {
+    val text = Source.fromFile("src/test/resources/wiki-project.txt").getLines().mkString("\n")
+
+    val parsedText = extractText(text)
+
+    parsedText should not be(empty)
+  }
+
+
 
 
 

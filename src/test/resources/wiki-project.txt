@@ -1,0 +1,236 @@
+{| width=&quot;100%&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; valign=&quot;top&quot;|
+|-
+|
+&lt;!-- BEGIN TABS --&gt;
+{| border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; height=&quot;50&quot; width=&quot;100%&quot;
+{{Wikipedia:WikiProject Dogs/Tab2|[[Wikipedia:WikiProject Dogs|Main]]}}
+{{Wikipedia:WikiProject Dogs/Tab2|[[Wikipedia:WikiProject Dogs/Members|Members]]}}
+{{Wikipedia:WikiProject Dogs/Tab2|[[Wikipedia:WikiProject Dogs/Assessment|Assessment]]}}
+{{Wikipedia:WikiProject Dogs/Tab2|[[Wikipedia:WikiProject Dogs/Recognized content|Awarded content]]}}
+{{Wikipedia:WikiProject Dogs/Tab2|[[Wikipedia:WikiProject Dogs/Templates|Templates]]}}
+{{Wikipedia:WikiProject Dogs/Tab1|Dog breeds task force}}
+| style=&quot;border-bottom:1px ridge black;&quot;  width=&quot;100&quot;| &amp;nbsp;
+|}
+&lt;!-- END TABS --&gt;
+{| width=&quot;100%&quot; style=&quot;background-color:#FFFFFF; padding:5px; border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000; &quot; cellspacing=&quot;5&quot; valign=&quot;top&quot;|
+
+First, an important note for everyone to remember:&lt;br&gt;
+
+A few Wikipedians have gotten together to make some suggestions about how we might organize articles about various dog breed descriptions.  These are things to give you focus and to get you going, and you ''shouldn't'' feel obligated in the least to start out by following them&amp;mdash;mainly, we just want you to write articles!   But if you don't know what to write or where to begin, following the below guidelines may be helpful.  If you add or change something that's inconsistent with the rest of the dog breed articles, that's OK--someone will most likely notice it and edit it for you.
+
+-----
+
+== Title ==
+'''Dog breeds task force''' of '''[[Wikipedia:WikiProject Dogs|WikiProject Dogs]]'''
+
+== Purpose ==
+This [[Wikipedia:WikiProject Council/Guide/Task forces|task force]] aims primarily to provide a full description of the various [[Dog breeds]].  A consistent outline format is provided, including a list of various breed characteristics.
+
+== Participants ==
+===Currently active in this project===
+*[[User:Bloggus1225|Bloggus1225]] - I've got myself 2 dogs and maybe 7 coming on the way. I'd love to contribute in some way .
+*[[User:Elf|Elf]] - I've been studying dog breeds as an amateur for many years and have a collection of relevant reference books. I participate in dog agility, maintain our club's web site[http://www.bayteam.org], and spent a lot of time with dogs, &quot;dog people&quot;, and dog trainers; attend occasional workshops on training techniques. Also an amateur photographer.
+*[[User:Bremen|Bremen]] 02:10, 21 Mar 2005 (UTC) I've been trying to make each breed page conform to a standard. Hope everyone is in agreement.
+*[[User:Floridan|Counsel]]- Dog owner, amateur trainer, and bird hunter.  I am active with two gun dog clubs and help organize field trials.
+* &lt;font face=&quot;tahoma small cap&quot;&gt;&lt;span style=&quot;border: 1px solid #828282; padding: 1px;&quot;&gt;[[User:hmwith|&lt;span style=&quot;background: #FFFFFF; color: #828282; font-weight: bold; &quot;&gt;hmwith&lt;/span&gt;]][[User_talk:hmwith|&lt;span style=&quot;background: #828282; color: #FFFFFF;&quot;&gt;talk&lt;/span&gt;]]&lt;/span&gt;&lt;/font&gt; - I've recently created [[English Water Spaniel]], [[Norfolk Spaniel]], and [[Tweed Water Spaniel]], as well as templates: [[Template:Spaniels|Spaniels]] and [[Template:Toy dogs|Toy dogs]].
+*[[User:VanTucky|&lt;span style=&quot;color:#E49B0F&quot;&gt;VanTucky&lt;/span&gt;]] &lt;sup&gt;[[User talk:VanTucky|(talk)]]&lt;/sup&gt; I have been quite active on dog breed articles, mainly working on improving the images according to [[WP:IMAGES]] and [[WP:IUP]].
+*[[User:Coaster1983|Coaster1983]] - I work with articles related to [[Spitz]] breeds
+*[[user:Miyagawa|Miyagawa]] - English Cocker Spaniel owner (thus my work on that page), and luckily living in an area with very diverse spread of breeds (although quite a lot of spaniels).
+*[[User:07bargem|07bargem]] - I am a great fan of dogs and some what of an expert of Mastiff types. If anyone wants anything, just ask and I will do my best.
+*[[User:gmip|Gmip]] working on hounds and unrecognised dog breeds.
+* '''[[User:Tikuko|&lt;font color=&quot;black&quot;&gt;T&lt;/font&gt;&lt;font color=&quot;orange&quot;&gt;K&lt;/font&gt;&lt;font color=&quot;gray&quot;&gt;K&lt;/font&gt;]]''' [[User talk:Tikuko|&lt;sup&gt;&lt;small&gt;bark&lt;/small&gt; &lt;i&gt;&lt;big&gt;!&lt;/big&gt;&lt;/i&gt;&lt;/sup&gt;]] 20:41, 9 January 2013 (UTC) - Working on verifying the notability of the numerous unrecognized dog breeds that seem to have gone unchecked for a very long time.
+*[[User:Hafspajen|Hafspajen]] Most dog breeds, and especially [[Spaniel]]s and [[Setter]]s, [[British]], Swedish and Hungarian dog breeds
+*[[User:Canarian|Canarian]] - [[Fédération Cynologique Internationale]], [[Molosser]]s of [[Catch dog]] (Presa) type; Moving on to Spanish &amp; Italian dog breeds
+* &lt;span style=&quot;white-space:nowrap;font-family:'Trebuchet MS'&quot;&gt;[[User:SMcCandlish|'''SMcCandlish''' ☺]] [[User talk:SMcCandlish|☏]] [[Special:Contributions/SMcCandlish|¢]] ≽&lt;sup&gt;ʌ&lt;/sup&gt;ⱷ҅&lt;sub&gt;ᴥ&lt;/sub&gt;ⱷ&lt;sup&gt;ʌ&lt;/sup&gt;≼ &lt;/span&gt; &amp;ndash; [[landrace]]s &amp; formal [[breed]]s; [[Animal coloration|coloration]] genetics; [[Dog fancy|breeder/fancier organizations]] and their breed standards; and [[MOS:LIFE|system-wide cleanup/consistency]].
+*[[User:White Arabian Filly|White Arabian Filly]] I am interested in [[Coonhound]] breeds, [[livestock guardian dog]] breeds, and [[Rat Terrier]]s. However, I wrote almost all the [[Maltipoo]] article and may work on anything if it strikes me as needing it!
+
+=== Working on similar dog project(s) in other languages ===
+This group, particularly Ganglieri, is working on creating better ways of managing interlanguage links and organization, creating tools and shortcuts to help, and building the spare dog breed article sets in other languages.
+
+* &quot;''[[user:Gangleri|Gangleri]] [[user talk:Gangleri|T]]''&quot; → [[user:לערי ריינהארט|{{style/yid|dir=ltr|yid=לערי ריינהארט}}]] [[user talk:לערי ריינהארט|T]] (aka Reinhardt) - Languages: de:+++, ro:++, en:++, eo:+++, is:+, ru: Thanks for telling me about this project! What I can do here is looking at the links between different Wikipedias and Wiktionaries, see [[Wiktionary:FAQ#Referencing_Wiktionaries_from_Other_Wikipedias]]. I am a native German born in Romania. Beside these languages and English I fluently can read, write and talk Esperanto. Have some basic knowlege about French, Icelandic and minor of Russian. Would be happy if the other participants would mention about known languages.  My main interests are [[Talk:Icelandic_Sheepdog|Icelandic Sheepdogs]] and [[Iceland]].
+*:[[User:Elf|Elf]] | [[User talk:Elf|Talk]] adds: There's an old joke: What do you call someone who speaks multiple languages?  A polyglot. What do you call someone who speaks two languages? Bilingual.  What do you call someone who speaks one language?  An American.  :-)  I'm the latter--had several years of French in school but I'm pretty much lost when I look at the French pages.  Anyway, welcome, and ''very'' glad you're here.
+*:[[User:Wcrowe|Wcrowe]] | [[User talk:Wcrowe|Talk]] adds: I speak some Spanish, German, French, Italian, and can order beer in Swahili.
+*:[[user:quill|Quill]]  Now ''that's'' funny.  Welcome to Mel and Reindhardt.  I read and write French, muddle about in a couple of others, but I can do the most important things in several languages:  say &quot;hello&quot;, &quot;I'm hungry&quot;--and ask where the toilet is.
+*:[[User:Hafspajen|Hafspajen]] speak Swedish, French, and little Hungarian
+
+&lt;center&gt;{{Wikipedia:WikiProject Dogs/Dog breeds task force/Templates/Additional credits}}&lt;/center&gt;
+
+== Hierarchy Definition ==
+No classification of dog breeds has been clearly defined. See this [[Wikipedia:WikiProject proposal|example]] on dividing a topic into a hierarchy.
+
+===Categories===
+By convention, category notation goes at the end of the article before interlanguage links:
+*&lt;nowiki&gt;[[Category:Dog breeds]]&lt;/nowiki&gt;: All dog breed articles about a specific breed should be labeled with this.
+*&lt;nowiki&gt;[[Category:Dog types]]&lt;/nowiki&gt;: All articles that could refer to a ''group'' or ''type'' of breeds should be labeled with this. Examples:  [[terrier]], [[scent hound]], [[sled dog]], [[working dog]].
+*On some occasions, it is appropriate for an article to be both in BREEDS and TYPES based on the way people might be searching for it among the category pages. Examples: [[Collie]], [[Foxhound]], [[Welsh Corgi]]. (People might not know that there is more than one type of collie, or foxhound, or corgi, so might often go to the BREEDS list first rather than the TYPES list.)
+
+FYI, both are subcategories of [[:Category:Dogs]].
+
+There have been occasional discussions about creating additional subcategories for each of the dog types, because there will likely be over 600 dogs in the BREEDS category when all is said and done. If this happens, breeds would be listed in BREEDS ''and'' in the subcategory.  (noted Feb 20, 2005).
+
+== Project subpages and discussions ==
+*[[/Templates]]: List and description of templates related to dogs and dog articles.
+*[[/To do]]: Dog-related articles that have been started but aren't up to standards, are missing breed tables, need wikifying, etc.; photos whose origin needs to be chased down; stuff like that.
+*[[/Breed grouping]]: Current breed grouping strategies ([[Wikipedia talk:WikiProject Dogs/Dog breeds task force/Breed grouping|talk]] page discusses possibilities)
+*[[/General]]: Random stuff that should be sorted into other catgs...
+*[[/Categories]]: Current dog-related category strategy, list of these categories, and organization  of categories (covers all dog-related articles, not just dog breeds) ([[Wikipedia talk:WikiProject Dogs/Dog breeds task force/Categories|talk]] page covers related discussions); for an up-to-the-moment list, you really need to start at [[:Category:Dogs]] and work your way down, but we'll try to keep this project subpage up-to-date also.
+*[[/Portals]]: Working copy of, and discussion about, dog-related portals.
+*[[/Breed source list]]: Initial research on breed names &amp; kennel club reg's
+{{User:WolterBot/Cleanup listing subscription|wgcat=Dog breeds task force articles}}
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+===Tips for ambitious participants===
+If you want to keep tabs on what anyone is doing with any breed page--for example, newcomers creating new breed pages, you can add every breed in [[List of dog breeds]] to your watchlist, including articles that don't yet exist. (Just click on the link, which gives you an edit page, and simply turn on Watch this Page.)  Yup, it takes a while to add them all...
+
+(An alternative (quicker) way to achieve the same effect is to:
+*display your watchlist
+*click the &quot;Edit raw watchlist&quot; link
+*copy and paste the text from [[Wikipedia:WikiProject Dogs/Dog breeds task force/list of dog breeds|this page]] to the end of the list
+*click the &quot;Update Watchlist&quot; button.)
+
+Or focus on a subset of breeds, existing and not, in which you're particularly interested.  Or just browse when the mood strikes you.&lt;br&gt;
+[http://en.wikipedia.org/w/index.php?title=Special:Recentchangeslinked&amp;target=Category%3ADog_breeds Recent changes for Category:Dog_breeds] will show the changes of the articles in that category.
+
+*See [[:Category:Dog stubs]] to browse through to find articles that are partial but not complete.
+
+*See [[:Category:Wikipedia requested breed photographs]] for requested photos.
+
+There is are also public watchlists at:
+*[[User:Sannse/dog watch]]
+*[[User:Elf/watchlistbreeds]]
+*[[User:Elf/watchlistdogrelated]]
+The  related changes links will show all recent changes to articles and talk pages listed on these pages.  This is freely editable, but please take care in removing articles from this list.
+
+== Recommended article structure ==
+There currently exists an article entitled [[List of dog breeds]], which enumerates the various recognized breeds.  Breed articles that already exist and are labeled with [[:Category:Dog breeds]] appear on that category page, as well.
+
+''Title'': The article for each breed shall be titled based on the apparently most-common official breed name from the major registries.  These names have been placed in the List of dog breeds page. (E.g., [[Welsh Corgi (Pembroke)]].) Where the major registries are evenly split on the name, or where the breed is not recognised by the major registries, the article title shall be chosen using the most commonly used name in English language sources, such as the English translation of the name used in the international Fédération Cynologique Internationale breed standard.
+
+''Redirects'': When creating a new page, [[redirect]]s (or [[wikipedia:Disambiguation|disambiguations]] under other possible names should be created to point to the page (e.g., [[Pembroke]], [[Pembroke Welsh Corgi]]).
+
+The article on each breed shall include the following information:
+
+''The following list is only a general suggestion, and should be re-ordered as necessary.''
+
+* a table giving basic information on other names, country of origin etc. (see template below).  The [[Weimaraner]] article shows this table in use.
+* Introduction: general information about the breed, brief history, brief description.
+* Appearance
+** Subcategories of the breed
+** Coat types and colors
+**Height and weight ranges
+**Build and proportions
+**Ears, tail, muzzle, etc.
+* Temperament and/or Characteristics
+* History
+* Health, including possibly--
+**Known medical issues
+**Life expectancy
+**How this breed differs from others in similar categories (e.g., &quot;Unlike other giant breeds, the xxx does not generally suffer from hip dysplasia&quot;)
+*Other possible topics; keep the content specific to this breed:
+** Care
+** Training
+** Activity
+*Miscellaneous: Important or interesting stuff that's worth knowing about the breed but doesn't seem to fit elsewhere.  Subsections might include:
+**Famous (breedname)... e.g., &quot;Famous Foxhounds&quot;
+**Celebrities who own (breedname)...  For animals that aren't particularly famous in  their own right, but try not to just list every random semi-notable Tom Dick or Harry who has a dog of this breed.
+*References: Include sources for the info that you put into the article, at least as much as you possibly can, both books &amp; other web sites
+*External links: Links to web sites that expand on the encyclopedic info provided by wikipedia. Generally excluded are local breed clubs (too many hundreds to try to maintain the links), commercial sites (where the ads or intent to sell something are blatant), forums and blogs (not particularly encyclopedic).
+==Recognized content==
+
+===Featured articles===
+{{col-begin}}
+{{col-break|width=33%}}
+*{{Icon|FA}} [[:Australian Cattle Dog]]
+{{col-break|width=33%}}
+*{{Icon|FA}} [[:Beagle]]
+{{col-end}}
+
+===Former featured articles===
+*{{Icon|DFA}} [[:Mixed-breed dog]]
+
+===Good articles===
+{{col-begin}}
+{{col-break|width=33%}}
+*{{Icon|GA}} [[:Akita (dog)]]
+*{{Icon|GA}} [[:Alpine Spaniel]]
+*{{Icon|GA}} [[:American Cocker Spaniel]]
+*{{Icon|GA}} [[:American Water Spaniel]]
+*{{Icon|GA}} [[:Blue Picardy Spaniel]]
+*{{Icon|GA}} [[:Cavalier King Charles Spaniel]]
+*{{Icon|GA}} [[:Clumber Spaniel]]
+*{{Icon|GA}} [[:Cocker Spaniel]]
+*{{Icon|GA}} [[:Dandie Dinmont Terrier]]
+*{{Icon|GA}} [[:English Springer Spaniel]]
+{{col-break|width=33%}}
+*{{Icon|GA}} [[:English Water Spaniel]]
+*{{Icon|GA}} [[:Field Spaniel]]
+*{{Icon|GA}} [[:Fox Terrier]]
+*{{Icon|GA}} [[:French Spaniel]]
+*{{Icon|GA}} [[:Jack Russell Terrier]]
+*{{Icon|GA}} [[:King Charles Spaniel]]
+*{{Icon|GA}} [[:Labrador Retriever]]
+*{{Icon|GA}} [[:Norfolk Spaniel]]
+*{{Icon|GA}} [[:Parson Russell Terrier]]
+*{{Icon|GA}} [[:Picardy Spaniel]]
+{{col-break|width=33%}}
+*{{Icon|GA}} [[:Pomeranian (dog)]]
+*{{Icon|GA}} [[:Russian Spaniel]]
+*{{Icon|GA}} [[:Russkiy Toy]]
+*{{Icon|GA}} [[:Saluki]]
+*{{Icon|GA}} [[:Scottish Terrier]]
+*{{Icon|GA}} [[:Sealyham Terrier]]
+*{{Icon|GA}} [[:Sussex Spaniel]]
+*{{Icon|GA}} [[:Tweed Water Spaniel]]
+*{{Icon|GA}} [[:Welsh Springer Spaniel]]
+*{{Icon|GA}} [[:West Highland White Terrier]]
+{{col-end}}
+
+===Former good articles===
+{{col-begin}}
+{{col-break|width=33%}}
+*{{Icon|DGA}} [[:Australian Kelpie]]
+*{{Icon|DGA}} [[:English Cocker Spaniel]]
+{{col-break|width=33%}}
+*{{Icon|DGA}} [[:German Shepherd Dog]]
+*{{Icon|DGA}} [[:Japanese Spitz]]
+{{col-break|width=33%}}
+*{{Icon|DGA}} [[:Pug]]
+{{col-end}}
+
+===''Did you know?'' articles===
+{{col-begin}}
+{{col-break|width=33%}}
+*{{Icon|DYK}} [[:Alpine Spaniel]]
+*{{Icon|DYK}} [[:Carolina Dog]]
+*{{Icon|DYK}} [[:Caucasian Shepherd Dog]]
+*{{Icon|DYK}} [[:Cocker Spaniel]]
+*{{Icon|DYK}} [[:English Water Spaniel]]
+*{{Icon|DYK}} [[:Hare Indian Dog]]
+*{{Icon|DYK}} [[:King Charles Spaniel]]
+{{col-break|width=33%}}
+*{{Icon|DYK}} [[:Majorca Shepherd Dog]]
+*{{Icon|DYK}} [[:Miniature Fox Terrier]]
+*{{Icon|DYK}} [[:Moscow Water Dog]]
+*{{Icon|DYK}} [[:Nova Scotia Duck Tolling Retriever]]
+*{{Icon|DYK}} [[:Old German Shepherd Dog]]
+*{{Icon|DYK}} [[:Picardy Spaniel]]
+*{{Icon|DYK}} [[:Russian Spaniel]]
+{{col-break|width=33%}}
+*{{Icon|DYK}} [[:Russkiy Toy]]
+*{{Icon|DYK}} [[:Saint-Usuge Spaniel]]
+*{{Icon|DYK}} [[:Smaland Hound]]
+*{{Icon|DYK}} [[:Toy Trawler Spaniel]]
+*{{Icon|DYK}} [[:Treeing Tennessee Brindle]]
+*{{Icon|DYK}} [[:Trigg Hound]]
+{{col-end}}
+
+==Infobox Dogbreed template==
+Each dog breed article will have an infobox; see [[/Templates]] subpage.
+
+{{WikiProject Footer}}
+
+[[Category:Dog breeds task force| ]]
+
+[[ru:Википедия:Проект:Породы собак]]
+[[pl:Wikiprojekt:Kynologia]]
+[[pt:Wikipedia:Projetos/Cães]]
