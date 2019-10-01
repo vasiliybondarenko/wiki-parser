@@ -198,8 +198,16 @@ object Parser extends WikiParser {
   def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] = _.zipWithIndex.map{
     case (p, id) =>
       val count = id + 1
+      val diff = System.nanoTime() - nanoStart
+      val avgTime = count * 1000000000 / diff
+
+      def fmt(n: Long) = if(n < 10) s"0$n" else s"$n"
+      def duration = {
+        val sec = diff / 1000000000
+        s"${fmt(sec / 3600)}:${fmt(sec / 60)}:${sec % 60}"
+      }
       if(count % 1000L == 0)
-        println(s"PAGES PROCESSED: $count,  AVG TIME: ${count.toDouble * 1000000000.0 / (System.nanoTime() - nanoStart) } pages per sec")
+        println(s"PAGES PROCESSED: $count, TOTAL TIME: $duration,  AVG TIME: ${avgTime} pages per sec")
       id -> p
   }
 
