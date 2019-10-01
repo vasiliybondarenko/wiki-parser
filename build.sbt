@@ -27,7 +27,7 @@ lazy val root = (project in file(".")).
 
       "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0",
 
-      "org.typelevel" %% "cats-core" % "1.0.1",
+      "org.typelevel" %% "cats-core" % "2.0.0",
       "org.typelevel" %% "cats-free" % "1.0.1",
       "org.typelevel" %% "cats-effect" % "1.0.0-RC"
     )

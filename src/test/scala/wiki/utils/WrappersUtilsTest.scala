@@ -12,11 +12,11 @@ class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
   implicit def toSb(s: String) = new StringBuilder(s)
 
   it should "return ordered sequence of brackets " in {
-    brackets("{{", "}}")("{{load}}", Stream.empty) should equal(Stream(Opened(0), Closed(6)))
-    brackets("{{", "}}")("{{{{load}}}}", Stream.empty) should equal(Stream(Opened(0), Opened(2), Closed(8), Closed(10)))
-    brackets("{{", "}}")("{{}}", Stream.empty) should equal(Stream(Opened(0), Closed(2)))
-    brackets("{{", "}}")("{{load{{reload}}}}", Stream.empty) should equal(Stream(Opened(0), Opened(6), Closed(14), Closed(16)))
-    brackets("{{", "}}")("{{}}{{}}", Stream.empty) should equal(Stream(Opened(0), Closed(2), Opened(4), Closed(6)))
+    brackets("{{", "}}")("{{load}}", List.empty) should equal(List(Opened(0), Closed(6)))
+    brackets("{{", "}}")("{{{{load}}}}", List.empty) should equal(List(Opened(0), Opened(2), Closed(8), Closed(10)))
+    brackets("{{", "}}")("{{}}", List.empty) should equal(List(Opened(0), Closed(2)))
+    brackets("{{", "}}")("{{load{{reload}}}}", List.empty) should equal(List(Opened(0), Opened(6), Closed(14), Closed(16)))
+    brackets("{{", "}}")("{{}}{{}}", List.empty) should equal(List(Opened(0), Closed(2), Opened(4), Closed(6)))
 
   }
 

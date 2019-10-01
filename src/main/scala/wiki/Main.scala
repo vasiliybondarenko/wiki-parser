@@ -17,6 +17,7 @@ import scala.util.Success
   */
 object Main extends App{
 
+  implicit val start = System.nanoTime()
 
   private def concat[F[_]]: Pipe[F, Segment[String, Unit], String] = _.flatMap(seg =>  S(seg.force.toList.mkString("\n") + "</page>"))
 

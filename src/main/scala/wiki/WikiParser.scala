@@ -189,13 +189,17 @@ object Parser extends WikiParser {
 
   def toPage[F[_]]: Pipe[F, String, Try[Page]] = _.flatMap(s => S.emit(parse(s)))
 
-  def wikiFilter(p: Page): Boolean = !p.text.toUpperCase.contains("#REDIRECT") && !p.title.toUpperCase.contains("(DISAMBIGUATION)")
+  def wikiFilter(p: Page): Boolean =
+    !p.text.toUpperCase.contains("#REDIRECT") &&
+      !p.title.toUpperCase.contains("(DISAMBIGUATION)") &&
+      !p.title.contains("Wikipedia:WikiProject")
 
   @deprecated("IO should be separated")
-  def logProgress[F[_]]: Pipe[F, Page, (Long, Page)] = _.zipWithIndex.map{
+  def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] = _.zipWithIndex.map{
     case (p, id) =>
       val count = id + 1
-      if(count % 100L == 0)  println(s"PAGES PROCESSED: $count")
+      if(count % 1000L == 0)
+        println(s"PAGES PROCESSED: $count,  AVG TIME: ${count.toDouble * 1000000000.0 / (System.nanoTime() - nanoStart) } pages per sec")
       id -> p
   }
 

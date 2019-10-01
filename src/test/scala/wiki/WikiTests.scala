@@ -177,7 +177,13 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     parsedText should not be(empty)
   }
 
+  it should "parse large text bodies without StackOverFlowException" in {
+    val text = Source.fromFile("src/test/resources/large-text.txt").getLines().mkString("\n")
 
+    val parsedText = extractText(text)
+
+    parsedText should not be(empty)
+  }
 
 
 

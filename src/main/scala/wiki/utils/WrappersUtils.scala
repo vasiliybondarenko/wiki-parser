@@ -1,6 +1,8 @@
 package wiki.utils
 
 import scala.annotation.tailrec
+import cats.data._
+import cats.data.Chain._
 
 /**
   * Created by Bondarenko on 8/17/18.
@@ -18,7 +20,7 @@ trait WrappersUtils {
   case class Closed(index: Int) extends Bracket
 
   @tailrec
-  final def brackets(begin: String, end: String)(s: StringBuilder, initial: Stream[Bracket], startIndex: Int = 0): Stream[Bracket] = {
+  final def brackets(begin: String, end: String)(s: StringBuilder, initial: List[Bracket], startIndex: Int = 0): List[Bracket] = {
     val o1 = s.indexOf(begin, startIndex)
     val c1 = s.indexOf(end, startIndex)
     val opened = if (o1 != -1) Some(Opened(o1)) else None
@@ -27,11 +29,11 @@ trait WrappersUtils {
     val (newState, newStartIndex) =
       (opened, closed) match {
         case (Some(o), Some(c)) =>
-          if (o1 < c1) (initial #::: Stream[Bracket](o), o1 + begin.length) else {
-            (initial #::: Stream[Bracket](c), c1 + end.length)
+          if (o1 < c1) (initial ::: List[Bracket](o), o1 + begin.length) else {
+            (initial ::: List[Bracket](c), c1 + end.length)
           }
-        case (Some(o), None) => initial #::: Stream[Bracket](o) -> (o.index + begin.length)
-        case (None, Some(c)) => initial #::: Stream[Bracket](c) -> (c.index + end.length)
+        case (Some(o), None) => (initial ::: List[Bracket](o)) -> (o.index + begin.length)
+        case (None, Some(c)) => (initial ::: List[Bracket](c)) -> (c.index + end.length)
         case _ => initial -> s.length
       }
 
@@ -66,8 +68,40 @@ trait WrappersUtils {
       }
     }
 
-    val allBrackets = brackets(begin, end)(s, Stream.empty)
-    replaceRec(s, opened, allBrackets)
+    @tailrec
+    def replaceRec1(s: StringBuilder, opened: List[Int], allBrackets: Chain[Bracket]): StringBuilder = {
+      val result =
+        allBrackets match {
+          case x if x.isEmpty => Right(s)
+          case b ==: restBrackets => b match {
+            case Opened(i) => Left(i :: opened)
+            case Closed(i) if !opened.isEmpty => opened match {
+              case firstOpened :: Nil =>
+                Right(s.replace(firstOpened, i + end.length, ""))
+              case _ :: restOpened =>
+                if(restBrackets.isEmpty) {
+                  val beginIndex = restOpened.last
+                  val endIndex = Some(s.indexOf("\n", beginIndex)).filter(_ > -1).getOrElse(s.length)
+                  Right(s.replace(beginIndex, endIndex, ""))
+                } else Left(restOpened)
+            }
+            case Closed(_) => Right(s)
+          }
+        }
+
+      val restBrackets = allBrackets match {
+        case _ ==: rest => rest
+        case x if x.isEmpty => Chain.empty[Bracket]
+      }
+
+      result match {
+        case Right(r) => r
+        case Left(opens) if(!opens.isEmpty) => replaceRec1(s, opens, restBrackets)
+      }
+    }
+
+    val allBrackets = brackets(begin, end)(s, List.empty)
+    replaceRec1(s, opened, Chain.fromSeq(allBrackets))
   }
 
   @tailrec
