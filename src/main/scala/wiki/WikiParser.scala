@@ -1,12 +1,12 @@
 package wiki
 
 import cats.effect.IO
-import fs2.{ Pipe, Sink, Stream => S }
-import org.bson.{ BsonElement, BsonString }
+import fs2.{Pipe, Sink, Stream => S}
+import org.bson.{BsonElement, BsonString}
 import org.mongodb.scala.Document
-import org.mongodb.scala.bson.{ BsonDocument, BsonInt64 }
+import org.mongodb.scala.bson.{BsonDocument, BsonInt64}
 import wiki.mongo.MongoApp
-import wiki.utils.{ FormattingUtils, WrappersUtils }
+import wiki.utils.{FormattingUtils, WrappersUtils}
 import scala.annotation.tailrec
 import scala.util.Try
 import scala.xml._
@@ -27,7 +27,6 @@ trait WikiParser extends Replacers {
     }
   }
 
-
   def formatPage(p: Page) = {
     s"""
     |------------------------------------------------------
@@ -38,30 +37,17 @@ trait WikiParser extends Replacers {
   }
 
   def extractText(rawText: String) =
-    rawText.
-      replaceMarkups
-      .replaceFonts
-      .replaceOther
-      .replaceLinks
-      .replaceBold
-      .replaceItalic
-      .removeFurtherReading
-      .removeReferences
-      .removeSeeAlso
-      .removeRefs
-      .removeExternalLinks
-      .removeTags
+    rawText.replaceMarkups.replaceFonts.replaceOther.replaceLinks.replaceBold.replaceItalic.removeFurtherReading.removeReferences.removeSeeAlso.removeRefs.removeExternalLinks.removeTags
 
   def removeFormatting(p: Page): Try[Page] = {
     Try(p.copy(text = extractText(p.text)))
   }
 
-
 }
 
 case class Page(title: String, text: String)
 
-trait Replacers extends WrappersUtils{
+trait Replacers extends WrappersUtils {
 
   implicit class Replacer(text: String) {
 
@@ -71,22 +57,23 @@ trait Replacers extends WrappersUtils{
       replaceWrapping(text, "[[", "]]") {
         _ match {
           case p1(_, link) => link
-          case p2(link) => link
+          case p2(link)    => link
         }
       }
     }
-
-
 
     def replaceBold = replaceWrapping(text, "'''", "'''")(s => s)
 
     def replaceItalic = replaceWrapping(text, "''", "''")(s => s)
 
-    def replaceMarkups = replaceAll("{{", "}}")(new StringBuilder(text)).toString().trim
+    def replaceMarkups =
+      replaceAll("{{", "}}")(new StringBuilder(text)).toString().trim
 
-    def replaceFonts = replaceAll("{|", "}")(new StringBuilder(text)).toString().trim
+    def replaceFonts =
+      replaceAll("{|", "}")(new StringBuilder(text)).toString().trim
 
-    def replaceOther = replaceAll("{", "}")(new StringBuilder(text)).toString().trim
+    def replaceOther =
+      replaceAll("{", "}")(new StringBuilder(text)).toString().trim
 
     def removeReferences = removeSection(text)("References")
 
@@ -96,7 +83,7 @@ trait Replacers extends WrappersUtils{
 
     def removeExternalLinks = removeSection(text)("External links")
 
-	def removeRefs = {
+    def removeRefs = {
       replaceWrappingSeq(text)(
         List(
           "&lt;ref" -> "&lt;/ref",
@@ -126,13 +113,18 @@ trait Replacers extends WrappersUtils{
       removeAfter(removeAfter(text, s"==$section=="), s"== $section ==")
     }
 
-    private final def replaceWrappingSeq(text: String)(wrappings: List[(String, String)]) = {
-      wrappings.foldLeft(text){
-        case (prevText, (begin, end)) => replaceWrapping(prevText, begin, end)(_ => "")
+    private final def replaceWrappingSeq(
+      text: String
+    )(wrappings: List[(String, String)]) = {
+      wrappings.foldLeft(text) {
+        case (prevText, (begin, end)) =>
+          replaceWrapping(prevText, begin, end)(_ => "")
       }
     }
 
-    private final def replaceWrapping(text: String, start: String, end: String)(f: String => String): String = {
+    private final def replaceWrapping(text: String, start: String, end: String)(
+      f: String => String
+    ): String = {
       val startIndex = text.indexOf(start, 0)
       val endIndex = text.indexOf(end, startIndex + start.length)
 
@@ -140,10 +132,15 @@ trait Replacers extends WrappersUtils{
       else {
         val inner = text.substring(startIndex + start.length, endIndex)
         val result = new StringBuilder(text)
-        replaceWrapping(result.replace(startIndex, endIndex + end.length, f(inner)).toString(), start, end)(f)
+        replaceWrapping(
+          result
+            .replace(startIndex, endIndex + end.length, f(inner))
+            .toString(),
+          start,
+          end
+        )(f)
       }
     }
-
 
 //    private final def removeTags(text: String)(f: String => String): String = {
 //      val p = "<([a-zA-Z]+)(.*)".r
@@ -170,7 +167,7 @@ trait Replacers extends WrappersUtils{
 
     private final def removeAfter(text: String, after: String) = {
       val startIndex = text.indexOf(after)
-      if(startIndex != -1) text.substring(0, startIndex).trim
+      if (startIndex != -1) text.substring(0, startIndex).trim
       else text.trim
     }
 
@@ -178,16 +175,19 @@ trait Replacers extends WrappersUtils{
 
 }
 
+object Parser extends WikiParser with FormattingUtils {
 
-object Parser extends WikiParser with FormattingUtils{
+  def withoutId[F[_]]: Pipe[F, (Long, Page), Page] =
+    _.flatMap(s => S.emit(s._2))
 
-  def withoutId[F[_]]: Pipe[F, (Long, Page), Page] = _.flatMap(s => S.emit(s._2))
+  def format[F[_]]: Pipe[F, Page, String] =
+    _.flatMap(s => S.emit(formatPage(s)))
 
-  def format[F[_]]: Pipe[F, Page, String] = _.flatMap(s => S.emit(formatPage(s)))
+  def extractText[F[_]]: Pipe[F, Page, Try[Page]] =
+    _.flatMap(s => S.emit(removeFormatting(s)))
 
-  def extractText[F[_]]: Pipe[F, Page, Try[Page]] = _.flatMap(s => S.emit(removeFormatting(s)))
-
-  def toPage[F[_]]: Pipe[F, String, Try[Page]] = _.flatMap(s => S.emit(parse(s)))
+  def toPage[F[_]]: Pipe[F, String, Try[Page]] =
+    _.flatMap(s => S.emit(parse(s)))
 
   def wikiFilter(p: Page): Boolean =
     !p.text.toUpperCase.contains("#REDIRECT") &&
@@ -195,17 +195,20 @@ object Parser extends WikiParser with FormattingUtils{
       !p.title.contains("Wikipedia:WikiProject")
 
   @deprecated("IO should be separated")
-  def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] = _.zipWithIndex.map{
-    case (p, id) =>
-      val count = id + 1
-      val diff = System.nanoTime() - nanoStart
-      val avgTime = count * 1000000000 / diff
-      def duration = formatDurationInNanos(diff)
+  def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] =
+    _.zipWithIndex.map {
+      case (p, id) =>
+        val count = id + 1
+        val diff = System.nanoTime() - nanoStart
+        val avgTime = count * 1000000000 / diff
+        def duration = formatDurationInNanos(diff)
 
-	  if(count % 1000L == 0 || count < 1000L)
-        println(s"PAGES PROCESSED: $count, TOTAL TIME: $duration,  AVG TIME: ${avgTime} pages per sec")
-      id -> p
-  }
+        if (count % 1000L == 0 || count < 1000L)
+          println(
+            s"PAGES PROCESSED: $count, TOTAL TIME: $duration,  AVG TIME: ${avgTime} pages per sec"
+          )
+        id -> p
+    }
 
   private def pageToDoc(id: Long, p: Page): Document = {
     val elements = List(
@@ -216,13 +219,16 @@ object Parser extends WikiParser with FormattingUtils{
     new Document(new BsonDocument(elements.asJava))
   }
 
-  def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)]{ p =>
-    MongoApp.writeDoc("articles")(p){
-      case (id, p) =>  pageToDoc(id + 6644760, p)
-    }.map(_ => ())
+  def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)] {
+    p =>
+      MongoApp
+        .writeDoc("articles")(p) {
+          case (id, p) => pageToDoc(id, p)
+        }
+        .map(_ => ())
   }
 
-  def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map{
+  def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map {
     case (p, id) =>
       val count = id + 1
       MongoApp.write("wiki1")(List(p.title -> p.text))
@@ -230,7 +236,5 @@ object Parser extends WikiParser with FormattingUtils{
   }
 
   def log[F[_]]: Pipe[F, (Page, Long), Page] = _.through(s => s.map(_._1))
-
-
 
 }

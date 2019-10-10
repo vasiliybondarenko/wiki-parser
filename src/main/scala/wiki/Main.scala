@@ -30,7 +30,6 @@ object Main extends App {
       .through(text.utf8Decode)
       .through(text.lines)
       .dropWhile(!_.contains("<page"))
-      .dropWhile(l => !startAfterTitle.forall(t => l.contains(s"title>$t")))
       .split(line => line.trim.startsWith("</page>"))
       .through(concat)
       .through(toPage)
