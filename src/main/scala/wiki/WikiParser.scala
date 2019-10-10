@@ -6,7 +6,7 @@ import org.bson.{ BsonElement, BsonString }
 import org.mongodb.scala.Document
 import org.mongodb.scala.bson.{ BsonDocument, BsonInt64 }
 import wiki.mongo.MongoApp
-import wiki.utils.WrappersUtils
+import wiki.utils.{ FormattingUtils, WrappersUtils }
 import scala.annotation.tailrec
 import scala.util.Try
 import scala.xml._
@@ -179,7 +179,7 @@ trait Replacers extends WrappersUtils{
 }
 
 
-object Parser extends WikiParser {
+object Parser extends WikiParser with FormattingUtils{
 
   def withoutId[F[_]]: Pipe[F, (Long, Page), Page] = _.flatMap(s => S.emit(s._2))
 
@@ -200,13 +200,9 @@ object Parser extends WikiParser {
       val count = id + 1
       val diff = System.nanoTime() - nanoStart
       val avgTime = count * 1000000000 / diff
+      def duration = formatDurationInNanos(diff)
 
-      def fmt(n: Long) = if(n < 10) s"0$n" else s"$n"
-      def duration = {
-        val sec = diff / 1000000000
-        s"${fmt(sec / 3600)}:${fmt(sec / 60)}:${sec % 60}"
-      }
-      if(count % 1000L == 0)
+	  if(count % 1000L == 0 || count < 1000L)
         println(s"PAGES PROCESSED: $count, TOTAL TIME: $duration,  AVG TIME: ${avgTime} pages per sec")
       id -> p
   }
@@ -222,7 +218,7 @@ object Parser extends WikiParser {
 
   def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)]{ p =>
     MongoApp.writeDoc("articles")(p){
-      case (id, p) =>  pageToDoc(id, p)
+      case (id, p) =>  pageToDoc(id + 6644760, p)
     }.map(_ => ())
   }
 
