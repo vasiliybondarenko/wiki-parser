@@ -16,7 +16,7 @@ import scala.collection.JavaConverters._
   * Project: Wikipedia
   */
 object MongoApp extends App {
-  lazy val client = MongoClient("mongodb://localhost:27018")
+  lazy val client = MongoClient("mongodb://localhost:27017")
 
   private def show = {
     val coll = client.getDatabase("test").getCollection("test")
