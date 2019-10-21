@@ -1,6 +1,7 @@
 package wiki.utils
 
 import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest._
 
 import scala.io.Source
 
@@ -33,6 +34,15 @@ class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
   it should "parse simple brackets" in {
     replace("{{", "}}")(new StringBuilder("{{load}}"), Nil) shouldBe empty
     replace("{{", "}}")(new StringBuilder("{{{{load}}}}"), Nil) shouldBe empty
+  }
+
+  it should "parse several brackets pairs" in {
+    val text =
+      "{{Use British English|date=January 2014}}{{Anarchism sidebar}}"
+    replaceAll("{{", "}}", true)(new StringBuilder(text))
+      .toString()
+      .trim shouldBe empty
+
   }
 
   it should "parse real brackets sequence" in {
@@ -71,7 +81,7 @@ class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
   }
 
   //todo: fix parsing
-  ignore should "parse without exceptions real article" in {
+  it should "parse without exceptions real article" in {
     val text =
       Source.fromFile("src/test/resources/test3.txt").getLines().mkString("\n")
 
