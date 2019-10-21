@@ -3,11 +3,10 @@ package wiki.setups
 import java.io.FileInputStream
 import java.util.Properties
 
-
 /**
-  * Created by Bondarenko on 5/27/18.
-  */
-object WikiConf  {
+ * Created by Bondarenko on 5/27/18.
+ */
+object WikiConf {
 
   implicit object Conf extends Config {
     override def wikiPath: String = PropHelpers.get("source.path").getOrElse(???)
@@ -34,6 +33,5 @@ trait Config {
   def wikiPath: String
 
   def targetFilePath: String
-
 
 }

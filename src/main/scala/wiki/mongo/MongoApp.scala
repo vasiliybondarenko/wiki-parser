@@ -11,10 +11,10 @@ import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 
 /**
-  * Created by Bondarenko on Sep, 23, 2019
-  * 11:12 PM.
-  * Project: Wikipedia
-  */
+ * Created by Bondarenko on Sep, 23, 2019
+ * 11:12 PM.
+ * Project: Wikipedia
+ */
 object MongoApp extends App {
   lazy val client = MongoClient("mongodb://localhost:27017")
 

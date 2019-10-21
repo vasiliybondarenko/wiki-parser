@@ -6,8 +6,8 @@ import org.scalatest._
 import scala.io.Source
 
 /**
-  * Created by Bondarenko on 8/17/18.
-  */
+ * Created by Bondarenko on 8/17/18.
+ */
 class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
 
   implicit def toSb(s: String) = new StringBuilder(s)
@@ -49,8 +49,8 @@ class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
     val s = s"""
            {{Abraham Lincoln}}
           {{Navboxes
-          |title=Offices and distinctions
-          |list1=
+    |title=Offices and distinctions
+    |list1=
           {{s-start}}
           {{s-par|us-hs}}
           {{s-bef|before=[[John Henry (representative)|John Henry]]}}

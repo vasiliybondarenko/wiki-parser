@@ -13,8 +13,8 @@ import wiki.setups.WikiConf.Conf
 import scala.util.Success
 
 /**
-  * Created by Bondarenko on 5/27/18.
-  */
+ * Created by Bondarenko on 5/27/18.
+ */
 object Main extends App {
 
   implicit val start = System.nanoTime()
@@ -22,7 +22,7 @@ object Main extends App {
   private def concat[F[_]]: Pipe[F, Segment[String, Unit], String] =
     _.flatMap(seg => S(seg.force.toList.mkString("\n") + "</page>"))
 
-  private def parsedWikiPages(config: Config) = {
+  private def parsedWikiPages(config: Config) =
     io.file
       .readAll[IO](Paths.get(config.wikiPath), 4096)
       .through(text.utf8Decode)
@@ -36,12 +36,10 @@ object Main extends App {
       .through(extractText)
       .collect { case Success(s) => s }
       .through(logProgress)
-  }
 
-  def convertAndWriteToMongo(implicit config: Config) = {
+  def convertAndWriteToMongo(implicit config: Config) =
     parsedWikiPages(config)
       .to(saveToMongoDB)
-  }
 
   def convertAndWriteToFile(implicit config: Config) = {
     deleteFile(config.targetFilePath)

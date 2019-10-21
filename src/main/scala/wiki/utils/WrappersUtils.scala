@@ -5,8 +5,8 @@ import cats.data._
 import cats.data.Chain._
 
 /**
-  * Created by Bondarenko on 8/17/18.
-  */
+ * Created by Bondarenko on 8/17/18.
+ */
 trait WrappersUtils {
 
   //implicit def toSB(s: String) = new StringBuilder(s)
@@ -54,9 +54,7 @@ trait WrappersUtils {
   )(s: StringBuilder, opened: List[Int]): StringBuilder = {
 
     @tailrec
-    def replaceRec(s: StringBuilder,
-                   opened: List[Int],
-                   allBrackets: Chain[Bracket]): StringBuilder = {
+    def replaceRec(s: StringBuilder, opened: List[Int], allBrackets: Chain[Bracket]): StringBuilder = {
 
       val result =
         allBrackets match {

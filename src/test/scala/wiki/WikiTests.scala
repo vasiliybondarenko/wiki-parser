@@ -1,20 +1,15 @@
 package wiki
 
 import org.scalatest._
-import org.scalatest.concurrent.{
-  Signaler,
-  ThreadSignaler,
-  TimeLimitedTests,
-  TimeLimits
-}
+import org.scalatest.concurrent.{Signaler, ThreadSignaler, TimeLimitedTests, TimeLimits}
 import org.scalatest.time.SpanSugar._
 import wiki.Implicits._
 
 import scala.io.Source
 
 /**
-  * Created by Bondarenko on 5/9/18.
-  */
+ * Created by Bondarenko on 5/9/18.
+ */
 class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
 
   "parser" should "parse internal links" in {
@@ -30,8 +25,8 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     val s = s"""
            {{Abraham Lincoln}}
           {{Navboxes
-          |title=Offices and distinctions
-          |list1=
+    |title=Offices and distinctions
+    |list1=
           {{s-start}}
           {{s-par|us-hs}}
           {{s-bef|before=[[John Henry (representative)|John Henry]]}}
@@ -196,10 +191,10 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
   it should "remove simple brackets sequences" in {
     val text =
       """
-      |{{Use British English|date=January 2014}}
-      |{{Anarchism sidebar}}
-      |{{Basic forms of government}}
-      |Anarchism is a political philosophy that advocates self-governed societies based on voluntary institutions. These are often described as stateless societies, although several authors have defined them more specifically as institutions based on non-hierarchical or free associations. Anarchism holds the state to be undesirable, unnecessary, and harmful.
+        |{{Use British English|date=January 2014}}
+        |{{Anarchism sidebar}}
+        |{{Basic forms of government}}
+        |Anarchism is a political philosophy that advocates self-governed societies based on voluntary institutions. These are often described as stateless societies, although several authors have defined them more specifically as institutions based on non-hierarchical or free associations. Anarchism holds the state to be undesirable, unnecessary, and harmful.
     """.stripMargin
     val parsedText = extractText(text)
 

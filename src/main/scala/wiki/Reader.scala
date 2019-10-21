@@ -11,26 +11,23 @@ import scalaz.stream.Process
 import scala.io.Source
 
 /**
-  * Created by Bondarenko on 4/25/18.
-  */
+ * Created by Bondarenko on 4/25/18.
+ */
 object Reader extends App {
 
-  implicit class P(value: Any){
+  implicit class P(value: Any) {
     def show() = println(value)
   }
-
 
   implicit lazy val sc = {
     val conf = new SparkConf().setAppName("Wiki").setMaster("local")
 
     new SparkContext(conf)
-    
+
   }
 
   def parse(path: String, outputFolder: String) = {
     Source.fromFile(path).getLines().toStream
-
-
 
 //    val stdout = Process constant (puts _) toSource
 //
@@ -44,8 +41,6 @@ object Reader extends App {
 
     val gets: Task[String] = Task { Console.readLine() }
 
-    
-
     //val p = Process eval puts("Hello, World!")
 
 //    val stdout = Process constant (puts _) toSource
@@ -57,15 +52,10 @@ object Reader extends App {
 //      Process eval puts(line)
 //    }
 
-
     val allLines = io.linesR(path)
-   
-    
-    
-
 
     //val lines = Process repeatEval gets
-    val stdout = Process constant (puts _) toSource
+    val stdout = Process.constant(puts _) toSource
 
     //val p = lines to stdout
 
@@ -78,19 +68,9 @@ object Reader extends App {
 
   def testSpark() = {
 
-
     val lines = sc.textFile(path)
   }
 
-
   testStreams(path)
-
-
-
-
-
-
-
-
 
 }
