@@ -17,13 +17,25 @@ import scala.collection.JavaConverters._
  */
 trait WikiParser extends Replacers {
 
+  private val wordPattern = "([a-zA-Z]+)".r
+
+  val delimiter = 0x8907.toChar
+
+  private def acceptLine(line: String): Boolean =
+    line.split("[ ,=]").collect { case wordPattern(w) if !w.trim.isEmpty => w }.length > 4
+
   def parse(text: String): Try[Page] =
     Try(XML.loadString(text)).flatMap { elem =>
       Try {
         val title = (elem \\ "page" \\ "title").text
-        val pageContent = (elem \\ "page" \\ "text").text
+        val pageContent =
+          (elem \\ "page" \\ "text").text
+            .split(delimiter.toString)
+            .filter(acceptLine)
+            .map(l => l.replaceAll("\\{\\{([^{}]+)\\}\\}", ""))
+            .mkString("\n")
         Page(title, pageContent)
-      }
+      }.filter(!_.text.trim.isEmpty)
     }
 
   def formatPage(p: Page) =
@@ -185,7 +197,8 @@ object Parser extends WikiParser with FormattingUtils {
   def wikiFilter(p: Page): Boolean =
     !p.text.toUpperCase.contains("#REDIRECT") &&
       !p.title.toUpperCase.contains("(DISAMBIGUATION)") &&
-      !p.title.contains("Wikipedia:WikiProject")
+      !p.title.contains("Wikipedia:WikiProject") &&
+      !p.title.contains("Module:")
 
   @deprecated("IO should be separated")
   def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] =
@@ -215,7 +228,7 @@ object Parser extends WikiParser with FormattingUtils {
   def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)] { p =>
     MongoApp
       .writeDoc("articles")(p) {
-        case (id, p) => pageToDoc(id, p)
+        case (id, p) => pageToDoc(id + 5778608, p)
       }
       .map(_ => ())
   }

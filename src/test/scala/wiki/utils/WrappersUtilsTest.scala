@@ -80,13 +80,4 @@ class WrappersUtilsTest extends FlatSpec with Matchers with WrappersUtils {
 
   }
 
-  //todo: fix parsing
-  it should "parse without exceptions real article" in {
-    val text =
-      Source.fromFile("src/test/resources/test3.txt").getLines().mkString("\n")
-
-    println(replaceAll("{{", "}}")(text).toString().trim)
-
-  }
-
 }

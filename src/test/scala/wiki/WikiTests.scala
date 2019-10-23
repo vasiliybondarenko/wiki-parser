@@ -108,6 +108,14 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
     )
   }
 
+  it should "remove == References == section" in {
+    val text = """  == Notes ==
+
+      == References ==        
+    """
+    extractText(text) shouldBe ("== Notes ==")
+  }
+
   it should "remove external links section" in {
     val text =
       """
@@ -227,6 +235,18 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
       extractText(text) shouldNot contain("{{")
     }
 
+  }
+
+  it should "parse without exceptions real article" in {
+    val text =
+      Source.fromFile("src/test/resources/test3.txt").getLines().mkString("\n")
+
+    val parsed = extractText(text).trim
+
+    parsed shouldNot contain("{{")
+    parsed shouldNot contain("}}")
+    parsed should startWith("Animation is a dynamic medium")
+    parsed should endWith("Annie Award for Best Animated Television Production")
   }
 
 }

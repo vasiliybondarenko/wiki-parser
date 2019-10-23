@@ -20,7 +20,15 @@ object Main extends App {
   implicit val start = System.nanoTime()
 
   private def concat[F[_]]: Pipe[F, Segment[String, Unit], String] =
-    _.flatMap(seg => S(seg.force.toList.mkString("\n") + "</page>"))
+    _.flatMap(seg => S(seg.force.toList.mkString(delimiter.toString) + "</page>"))
+
+  private def skipLine(line: String): Boolean = {
+    val s = line.trim
+    s.startsWith("{{") && s.endsWith("}}") ||
+    s.startsWith("*") ||
+    s.startsWith("|") ||
+    s.startsWith("{|")
+  }
 
   private def parsedWikiPages(config: Config) =
     io.file
