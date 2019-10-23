@@ -228,7 +228,7 @@ object Parser extends WikiParser with FormattingUtils {
   def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)] { p =>
     MongoApp
       .writeDoc("articles")(p) {
-        case (id, p) => pageToDoc(id + 5778608, p)
+        case (id, p) => pageToDoc(id, p)
       }
       .map(_ => ())
   }
