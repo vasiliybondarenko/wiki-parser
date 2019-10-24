@@ -2,7 +2,7 @@ package wiki.mongo
 
 import org.mongodb.scala.Document
 import wiki.Usage
-import org.bson.{BsonElement, BsonString}
+import org.bson.{BsonArray, BsonElement, BsonString}
 import org.mongodb.scala.bson.{BsonDocument, BsonInt64}
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.{Document, MongoClient}
@@ -21,11 +21,11 @@ object MongoSerdes {
         new BsonElement("id", new BsonInt64(data.id)),
         new BsonElement("pageId", new BsonInt64(data.pageId)),
         new BsonElement("title", new BsonString(data.pageTitle)),
-        new BsonElement("body", new BsonString(data.body))
+        new BsonElement("body", new BsonArray(data.sentences.map(new BsonString(_)).toList.asJava))
       )
       new Document(new BsonDocument(elements.asJava))
     }
 
-    def mongoCollection: String = "sentences"
+    def mongoCollection: String = "usages"
   }
 }

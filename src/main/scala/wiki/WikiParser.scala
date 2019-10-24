@@ -54,20 +54,26 @@ trait WikiParser extends Replacers {
           val title = (elem \\ "page" \\ "title").text
           val pageContent =
             (elem \\ "page" \\ "text").text
-              .split(delimiter.toString)
-              .filter(acceptLine)
-              .map(l => l.replaceAll("\\{\\{([^{}]+)\\}\\}", ""))
-
-//          splitLines(l => l.trim.startsWith("==") && l.trim.endsWith("=="))(pageContent)
-//            .map { lines =>
-//              Usage(-1L, -1L, title, lines.mkString("\n"))
-//            }
-//            .filter(!_.body.isEmpty)
-
-          pageContent.flatMap(_.split('\n')).map(text => Usage(-1L, -1L, title, text)).toList
+          title -> pageContent
+        }.filter { case (title, body) => acceptPage(title, body) }.map {
+          case (title, body) =>
+            val pageContent =
+              body
+                .split(delimiter.toString)
+                .flatMap(_.split('\n'))
+                .filter(acceptLine)
+                .map(extractText)
+                .map(l => l.replaceAll("\\{\\{([^{}]+)\\}\\}", ""))
+            Usage(-1L, -1L, title, pageContent) :: Nil
         }
       }
       .getOrElse(Nil)
+
+  def acceptPage(title: String, body: String) =
+    !body.toUpperCase.contains("#REDIRECT") &&
+      !title.toUpperCase.contains("(DISAMBIGUATION)") &&
+      !title.contains("Wikipedia:WikiProject") &&
+      !title.contains("Module:")
 
   def formatPage(p: Page) =
     s"""
@@ -82,7 +88,7 @@ trait WikiParser extends Replacers {
        |------------------------------------------------------
        |${p.pageTitle}
        |
-       |${p.body}
+       |${p.sentences.mkString("\n")}
     """.stripMargin('|')
 
   def extractText(rawText: String) =
@@ -91,14 +97,11 @@ trait WikiParser extends Replacers {
   def removeFormatting(p: Page): Try[Page] =
     Try(p.copy(text = extractText(p.text)))
 
-  def removeFormattingFromUsage(p: Usage): Try[Usage] =
-    Try(p.copy(body = extractText(p.body)))
-
 }
 
 case class Page(title: String, text: String)
 
-case class Usage(id: Long, pageId: Long, pageTitle: String, body: String)
+case class Usage(id: Long, pageId: Long, pageTitle: String, sentences: Array[String])
 
 trait Replacers extends WrappersUtils {
 
@@ -238,9 +241,6 @@ object Parser extends WikiParser with FormattingUtils {
   def extractText[F[_]]: Pipe[F, Page, Try[Page]] =
     _.flatMap(s => S.emit(removeFormatting(s)))
 
-  def extractTextFromUsage[F[_]]: Pipe[F, Usage, Try[Usage]] =
-    _.flatMap(s => S.emit(removeFormattingFromUsage(s)))
-
   def toPage[F[_]]: Pipe[F, String, Try[Page]] =
     _.flatMap(s => S.emit(parse(s)))
 
@@ -255,12 +255,6 @@ object Parser extends WikiParser with FormattingUtils {
       !p.title.toUpperCase.contains("(DISAMBIGUATION)") &&
       !p.title.contains("Wikipedia:WikiProject") &&
       !p.title.contains("Module:")
-
-  def wikiFilter(p: Usage): Boolean =
-    !p.body.toUpperCase.contains("#REDIRECT") &&
-      !p.pageTitle.toUpperCase.contains("(DISAMBIGUATION)") &&
-      !p.pageTitle.contains("Wikipedia:WikiProject") &&
-      !p.pageTitle.contains("Module:")
 
   @deprecated("IO should be separated")
   def logProgress[F[_], A](implicit nanoStart: Long): Pipe[F, A, A] =

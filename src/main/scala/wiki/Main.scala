@@ -1,7 +1,6 @@
 package wiki
 
 import java.nio.file.Paths
-
 import cats.effect.IO
 import fs2.Stream._
 import fs2.{Pipe, Segment, io, text, Stream => S}
@@ -10,7 +9,7 @@ import wiki.Parser._
 import wiki.setups.Config
 import wiki.setups.WikiConf.Conf
 import wiki.mongo.MongoSerdes.UsagesSerde
-
+import scala.io.Source
 import scala.util.Success
 
 /**
@@ -41,9 +40,6 @@ object Main extends App {
       .through(concat)
       .through(logProgress)
       .through(toUsage)
-      .filter(wikiFilter)
-      .through(extractTextFromUsage)
-      .collect { case Success(s) => s }
       .through(withId)
 
   def convertAndWriteToMongo(implicit config: Config) =
