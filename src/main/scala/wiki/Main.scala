@@ -9,6 +9,7 @@ import wiki.IOUtils.deleteFile
 import wiki.Parser._
 import wiki.setups.Config
 import wiki.setups.WikiConf.Conf
+import wiki.mongo.MongoSerdes.UsagesSerde
 
 import scala.util.Success
 
@@ -38,12 +39,12 @@ object Main extends App {
       .dropWhile(!_.contains("<page"))
       .split(line => line.trim.startsWith("</page>"))
       .through(concat)
-      .through(toPage)
-      .collect { case Success(s) => s }
-      .filter(wikiFilter)
-      .through(extractText)
-      .collect { case Success(s) => s }
       .through(logProgress)
+      .through(toUsage)
+      .filter(wikiFilter)
+      .through(extractTextFromUsage)
+      .collect { case Success(s) => s }
+      .through(withId)
 
   def convertAndWriteToMongo(implicit config: Config) =
     parsedWikiPages(config)
@@ -52,8 +53,7 @@ object Main extends App {
   def convertAndWriteToFile(implicit config: Config) = {
     deleteFile(config.targetFilePath)
     parsedWikiPages(config)
-      .through(withoutId)
-      .through(format)
+      .through(usageToText)
       .through(text.utf8Encode)
       .to(io.file.writeAll(Paths.get(config.targetFilePath)))
   }

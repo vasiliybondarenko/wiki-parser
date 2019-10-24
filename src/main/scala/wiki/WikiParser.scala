@@ -1,16 +1,15 @@
 package wiki
 
 import cats.effect.IO
-import fs2.{Pipe, Sink, Stream => S}
+import fs2.{Chunk, Pipe, Sink, Stream => S}
 import org.bson.{BsonElement, BsonString}
 import org.mongodb.scala.Document
 import org.mongodb.scala.bson.{BsonDocument, BsonInt64}
-import wiki.mongo.MongoApp
+import wiki.mongo.{MongoApp, MongoSerde}
 import wiki.utils.{FormattingUtils, WrappersUtils}
-import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 import scala.util.Try
 import scala.xml._
-import scala.collection.JavaConverters._
 
 /**
  * Created by Bondarenko on 5/9/18.
@@ -38,6 +37,38 @@ trait WikiParser extends Replacers {
       }.filter(!_.text.trim.isEmpty)
     }
 
+  def splitLines(splitter: String => Boolean)(seq: Seq[String]): List[List[String]] =
+    seq.foldLeft(List.empty[List[String]]) { (acc, curr) =>
+      acc match {
+        case Nil => List(List(curr))
+        case h :: tail =>
+          if (!splitter(curr)) (h ::: List(curr)) :: tail
+          else List(List.empty[String]) ::: acc
+      }
+    }
+
+  def parseUsages(text: String): List[Usage] =
+    Try(XML.loadString(text))
+      .flatMap { elem =>
+        Try {
+          val title = (elem \\ "page" \\ "title").text
+          val pageContent =
+            (elem \\ "page" \\ "text").text
+              .split(delimiter.toString)
+              .filter(acceptLine)
+              .map(l => l.replaceAll("\\{\\{([^{}]+)\\}\\}", ""))
+
+//          splitLines(l => l.trim.startsWith("==") && l.trim.endsWith("=="))(pageContent)
+//            .map { lines =>
+//              Usage(-1L, -1L, title, lines.mkString("\n"))
+//            }
+//            .filter(!_.body.isEmpty)
+
+          pageContent.flatMap(_.split('\n')).map(text => Usage(-1L, -1L, title, text)).toList
+        }
+      }
+      .getOrElse(Nil)
+
   def formatPage(p: Page) =
     s"""
        |------------------------------------------------------
@@ -46,15 +77,28 @@ trait WikiParser extends Replacers {
        |${p.text}
     """.stripMargin('|')
 
+  def formatUsage(p: Usage) =
+    s"""
+       |------------------------------------------------------
+       |${p.pageTitle}
+       |
+       |${p.body}
+    """.stripMargin('|')
+
   def extractText(rawText: String) =
     rawText.replaceMarkups.replaceFonts.replaceOther.replaceLinks.replaceBold.replaceItalic.removeFurtherReading.removeReferences.removeSeeAlso.removeRefs.removeExternalLinks.removeTags
 
   def removeFormatting(p: Page): Try[Page] =
     Try(p.copy(text = extractText(p.text)))
 
+  def removeFormattingFromUsage(p: Usage): Try[Usage] =
+    Try(p.copy(body = extractText(p.body)))
+
 }
 
 case class Page(title: String, text: String)
+
+case class Usage(id: Long, pageId: Long, pageTitle: String, body: String)
 
 trait Replacers extends WrappersUtils {
 
@@ -185,14 +229,26 @@ object Parser extends WikiParser with FormattingUtils {
   def withoutId[F[_]]: Pipe[F, (Long, Page), Page] =
     _.flatMap(s => S.emit(s._2))
 
-  def format[F[_]]: Pipe[F, Page, String] =
+  def pageToText[F[_]]: Pipe[F, Page, String] =
     _.flatMap(s => S.emit(formatPage(s)))
+
+  def usageToText[F[_]]: Pipe[F, Usage, String] =
+    _.flatMap(s => S.emit(formatUsage(s)))
 
   def extractText[F[_]]: Pipe[F, Page, Try[Page]] =
     _.flatMap(s => S.emit(removeFormatting(s)))
 
+  def extractTextFromUsage[F[_]]: Pipe[F, Usage, Try[Usage]] =
+    _.flatMap(s => S.emit(removeFormattingFromUsage(s)))
+
   def toPage[F[_]]: Pipe[F, String, Try[Page]] =
     _.flatMap(s => S.emit(parse(s)))
+
+//  def utf8Encode[F[_]]: Pipe[F, String, Byte] =
+//    _.flatMap(s => Stream.chunk(Chunk.bytes(s.getBytes(utf8Charset))))
+
+  def toUsage[F[_]]: Pipe[F, String, Usage] =
+    _.flatMap(s => S.chunk(Chunk.seq(parseUsages(s))))
 
   def wikiFilter(p: Page): Boolean =
     !p.text.toUpperCase.contains("#REDIRECT") &&
@@ -200,8 +256,14 @@ object Parser extends WikiParser with FormattingUtils {
       !p.title.contains("Wikipedia:WikiProject") &&
       !p.title.contains("Module:")
 
+  def wikiFilter(p: Usage): Boolean =
+    !p.body.toUpperCase.contains("#REDIRECT") &&
+      !p.pageTitle.toUpperCase.contains("(DISAMBIGUATION)") &&
+      !p.pageTitle.contains("Wikipedia:WikiProject") &&
+      !p.pageTitle.contains("Module:")
+
   @deprecated("IO should be separated")
-  def logProgress[F[_]](implicit nanoStart: Long): Pipe[F, Page, (Long, Page)] =
+  def logProgress[F[_], A](implicit nanoStart: Long): Pipe[F, A, A] =
     _.zipWithIndex.map {
       case (p, id) =>
         val count = id + 1
@@ -213,7 +275,12 @@ object Parser extends WikiParser with FormattingUtils {
           println(
             s"PAGES PROCESSED: $count, TOTAL TIME: $duration,  AVG TIME: ${avgTime} pages per sec"
           )
-        id -> p
+        p
+    }
+
+  def withId[F[_]]: Pipe[F, Usage, Usage] =
+    _.zipWithIndex.map {
+      case (p, id) => p.copy(id = id)
     }
 
   private def pageToDoc(id: Long, p: Page): Document = {
@@ -225,10 +292,11 @@ object Parser extends WikiParser with FormattingUtils {
     new Document(new BsonDocument(elements.asJava))
   }
 
-  def saveToMongoDB[F[_]]: Sink[IO, (Long, Page)] = Sink[IO, (Long, Page)] { p =>
+  def saveToMongoDB[F[_], A: MongoSerde]: Sink[IO, A] = Sink[IO, A] { p =>
+    val serde = implicitly[MongoSerde[A]]
     MongoApp
-      .writeDoc("articles")(p) {
-        case (id, p) => pageToDoc(id, p)
+      .writeDoc(serde.mongoCollection)(p) {
+        serde.toMongoDoc
       }
       .map(_ => ())
   }

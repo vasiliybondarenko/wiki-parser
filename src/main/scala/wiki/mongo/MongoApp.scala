@@ -60,3 +60,8 @@ object MongoApp extends App {
   }
 
 }
+
+trait MongoSerde[A] {
+  def toMongoDoc(data: A): Document
+  def mongoCollection: String
+}
