@@ -14,7 +14,7 @@ import scala.xml._
 /**
  * Created by Bondarenko on 5/9/18.
  */
-trait WikiParser extends Replacers {
+trait WikiParser extends WikiTextExtractor with Replacers {
 
   private val wordPattern = "([a-zA-Z]+)".r
 
@@ -61,9 +61,7 @@ trait WikiParser extends Replacers {
               body
                 .split(delimiter.toString)
                 .flatMap(_.split('\n'))
-                .filter(acceptLine)
-                .map(extractText)
-                .map(l => l.replaceAll("\\{\\{([^{}]+)\\}\\}", ""))
+                .map(s => s"${proceedLine(s)}\n\n")
             Usage(-1L, -1L, title, pageContent) :: Nil
         }
       }
