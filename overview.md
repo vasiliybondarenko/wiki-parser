@@ -150,3 +150,27 @@ class NoopLoader extends FileSystemLoader with ClasspathLoader {  ... }
  ```scala  
  val fileio:FileLoader = new NoopLoader()
  ```
+ 
+ 
+ 
+ 
+ 6. Как лучше организовать enum. Как сравнивать со значениями String
+ 
+ ```scala
+ //Enums with case object
+
+object Answer {
+
+  abstract sealed class YesNo(value: String, name: String) {
+    override def toString: String = value
+  }
+
+  case object Yes extends YesNo("Yes", "yes")
+  case object No extends YesNo("No", "yes")
+
+}
+
+def isYes(answer: Answer.YesNo) = answer.toString == Answer.Yes.toString
+
+ ```
+ 
