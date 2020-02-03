@@ -6,9 +6,10 @@ import org.bson.{BsonElement, BsonString}
 import org.mongodb.scala.Document
 import org.mongodb.scala.bson.{BsonDocument, BsonInt64}
 import wiki.mongo.{MongoApp, MongoSerde}
+import wiki.neo4j.Neo4jConnector
 import wiki.utils.{FormattingUtils, WrappersUtils}
 import scala.collection.JavaConverters._
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.xml._
 
 /**
@@ -57,12 +58,13 @@ trait WikiParser extends WikiTextExtractor with Replacers {
           title -> pageContent
         }.filter { case (title, body) => acceptPage(title, body) }.map {
           case (title, body) =>
+            val links = collectWikiLinks(body)
             val pageContent =
               body
                 .split(delimiter.toString)
                 .flatMap(_.split('\n'))
                 .map(s => s"${proceedLine(s)}\n\n")
-            Usage(-1L, -1L, title, pageContent) :: Nil
+            Usage(-1L, -1L, title, pageContent, links) :: Nil
         }
       }
       .getOrElse(Nil)
@@ -99,7 +101,11 @@ trait WikiParser extends WikiTextExtractor with Replacers {
 
 case class Page(title: String, text: String)
 
-case class Usage(id: Long, pageId: Long, pageTitle: String, sentences: Array[String])
+case class Usage(id: Long,
+                 pageId: Long,
+                 pageTitle: String,
+                 sentences: Array[String],
+                 links: List[String])
 
 trait Replacers extends WrappersUtils {
 
@@ -291,6 +297,17 @@ object Parser extends WikiParser with FormattingUtils {
         serde.toMongoDoc
       }
       .map(_ => ())
+  }
+
+  def saveToNeo4j: Sink[IO, Usage] = Sink[IO, Usage] { usage =>
+    Neo4jConnector.save[IO](usage).map { x =>
+      x match {
+        case Failure(ex) => ex.printStackTrace()
+        case Success(value) =>
+          println(s"USAGE [${usage.pageTitle}] [${usage.links.size}] WAS SAVED")
+      }
+
+    }
   }
 
   def writeToMongo[F[_]]: Pipe[F, Page, Page] = _.zipWithIndex.map {

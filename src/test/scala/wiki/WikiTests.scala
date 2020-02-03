@@ -10,7 +10,7 @@ import scala.io.Source
 /**
  * Created by Bondarenko on 5/9/18.
  */
-class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
+class WikiTests extends FlatSpec with Matchers with WikiParser {
 
   "parser" should "parse internal links" in {
     val s =
@@ -231,9 +231,7 @@ class WikiTests extends FlatSpec with Timed with Matchers with WikiParser {
                    {{Social sciences}}
         """
 
-    failAfter(1 seconds) {
-      extractText(text) shouldNot contain("{{")
-    }
+    extractText(text) shouldNot contain("{{")
 
   }
 

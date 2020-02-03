@@ -1,6 +1,6 @@
 package wiki.mongo
 
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import org.bson.conversions.Bson
 import org.bson.{BsonElement, BsonString}
 import org.mongodb.scala.bson.BsonDocument
@@ -9,6 +9,8 @@ import org.mongodb.scala.{Document, MongoClient}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext.global
+import scala.util.Try
 
 /**
  * Created by Bondarenko on Sep, 23, 2019
@@ -16,12 +18,16 @@ import scala.collection.JavaConverters._
  * Project: Wikipedia
  */
 object MongoApp extends App {
+  implicit val cs: ContextShift[IO] = IO.contextShift(global)
+
   lazy val client = MongoClient("mongodb://localhost:27017")
 
-  private def show = {
-    val coll = client.getDatabase("test").getCollection("test")
-    val result = coll.find().toFuture()
-    Await.result(result, 10.second).foreach(println)
+  def getDocuments(collectionName: String)(startId: Int, count: Int) = {
+    val coll = client.getDatabase("wikipedia").getCollection(collectionName)
+    Await.result(
+      coll.find(Filters.gte("id", startId)).limit(count).toFuture(),
+      10.second
+    )
   }
 
   def textSearch(collectionName: String)(search: String) = {
@@ -55,11 +61,21 @@ object MongoApp extends App {
     }
   }
 
+  def writeDocs[T](collectionName: String)(docs: Seq[T])(f: T => Document) = {
+    val coll = client.getDatabase("wikipedia").getCollection(collectionName)
+    IO {
+      Await.result(coll.insertMany(docs.map(f)).toFuture(), 10.seconds)
+    }
+
+  }
+
   textSearch("wiki1")("Enraged over").foreach { d =>
     println(d)
   }
 
 }
+
+case class Word(value: String, count: Long)
 
 trait MongoSerde[A] {
   def toMongoDoc(data: A): Document

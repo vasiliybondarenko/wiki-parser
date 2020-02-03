@@ -7,6 +7,7 @@ import org.mongodb.scala.bson.{BsonDocument, BsonInt64}
 import org.mongodb.scala.model.Filters
 import org.mongodb.scala.{Document, MongoClient}
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
 
 /**
  * Created by Bondarenko on Oct, 24, 2019
@@ -26,6 +27,19 @@ object MongoSerdes {
       new Document(new BsonDocument(elements.asJava))
     }
 
-    def mongoCollection: String = "usages"
+    def mongoCollection: String = "usages.temp"
   }
+
+  implicit object WordsSerde extends MongoSerde[Word] {
+    def toMongoDoc(data: Word): Document = {
+      val elements = List(
+        new BsonElement("value", new BsonString(data.value)),
+        new BsonElement("count", new BsonInt64(data.count))
+      )
+      new Document(new BsonDocument(elements.asJava))
+    }
+
+    def mongoCollection: String = "words"
+  }
+
 }
